@@ -1,13 +1,21 @@
 package net.danizen;
 
+import com.norconex.collector.http.HttpCollector;
+import com.norconex.collector.http.HttpCollectorConfig;
+
 /**
- * Hello world!
- *
+ * Program to crawl and commit collected data to Solr.
  */
 public class App 
 {
     public static void main( String[] args )
     {
-        System.out.println( "Hello World!" );
+        HttpCollectorConfig config = new HttpCollectorConfig();
+        config.setId("myid");
+        config.setLogsDir("logs");
+        
+        HttpCollector collector = new HttpCollector(config);
+        collector.start(true);
     }
 }
+
