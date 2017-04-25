@@ -73,9 +73,9 @@
       </importer> 
       
       <!-- Decide what to do with your files by specifying a Committer. -->
-      <committer class="com.norconex.committer.solr.SolrCommitter">
-        <solrURL>http://localhost:8983/solr/gettingstarted/</solrURL>
-        <targetReferenceField>id</targetReferenceField>
+      <committer class="com.norconex.committer.elasticsearch.ElasticsearchCommitter">
+        <indexName>medlineplus</indexName>
+        <typeName>page</typeName>
         <queueDir>output/medlineplus/queue</queueDir>
         <queueSize>20</queueSize>
         <commitSize>10</commitSize>

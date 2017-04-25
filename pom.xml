@@ -11,6 +11,7 @@
   <properties>
     <norconex.http.version>2.6.2</norconex.http.version>
     <norconex.solr.version>2.2.0</norconex.solr.version>
+    <norconex.elastic.version>2.1.0</norconex.elastic.version>
     <sourceEncoding>UTF-8</sourceEncoding>
     <configfile>./minimum-config.xml</configfile>
   </properties>
@@ -61,6 +62,19 @@
       <groupId>com.norconex.collectors</groupId>
       <artifactId>norconex-committer-solr</artifactId>
       <version>${norconex.solr.version}</version>
+    </dependency>
+
+    <dependency>
+      <groupId>com.norconex.collectors</groupId>
+      <artifactId>norconex-committer-elasticsearch</artifactId>
+      <version>${norconex.elastic.version}</version>
+    </dependency>
+
+    <!-- Override an old, old version -->
+    <dependency>
+      <groupId>org.elasticsearch</groupId>
+      <artifactId>elasticsearch</artifactId>
+      <version>5.3.1</version>
     </dependency>
 
     <dependency>
