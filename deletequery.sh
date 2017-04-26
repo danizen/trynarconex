@@ -13,13 +13,13 @@ while getopts 'h:p:i:' opt; do
   esac
 done
 
-curl -X PUT "http://$ES_HOST:$ES_PORT/$ES_INDEX?pretty=true" --data @- <<EOF
+curl -X DELETE "http://$ES_HOST:$ES_PORT/$ES_INDEX/page/_delete_by_query?pretty=true" --data @- <<EOF
 {
-  "settings": {
-    "index": {
-      "number_of_shards": 1,
-      "number_of_replicas": 2
-    }
+  "query": {
+    "match_all": {}
   }
 }
 EOF
+
+curl "http://$ES_HOST:$ES_PORT/$ES_INDEX/_flush?pretty=true"
+

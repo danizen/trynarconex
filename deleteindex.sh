@@ -13,13 +13,4 @@ while getopts 'h:p:i:' opt; do
   esac
 done
 
-curl -X PUT "http://$ES_HOST:$ES_PORT/$ES_INDEX?pretty=true" --data @- <<EOF
-{
-  "settings": {
-    "index": {
-      "number_of_shards": 1,
-      "number_of_replicas": 2
-    }
-  }
-}
-EOF
+curl -X DELETE "http://$ES_HOST:$ES_PORT/$ES_INDEX?pretty=true"

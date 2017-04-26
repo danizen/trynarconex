@@ -3,7 +3,7 @@ ES_HOST=localhost
 ES_PORT=9200
 ES_INDEX=medlineplus
 
-while getopts 'h:p:i' opt; do 
+while getopts 'h:p:i:' opt; do
   case $opt in
     h) ES_HOST=$OPTARG ;;
     p) ES_PORT=$OPTARG ;;
@@ -12,5 +12,11 @@ while getopts 'h:p:i' opt; do
   esac
 done
 
-curl "http://$ES_HOST:$ES_PORT/$ES_INDEX/_search?pretty=true&q=*:*" 
+curl "http://$ES_HOST:$ES_PORT/$ES_INDEX/page/_search?pretty=true" --data @- <<EOF
+{
+  "query": {
+    "match_all": {}
+  }
+}
+EOF
 

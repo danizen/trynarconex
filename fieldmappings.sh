@@ -4,7 +4,7 @@ ES_HOST=localhost
 ES_PORT=9200
 ES_INDEX=medlineplus
 
-while getopts 'h:p:i' opt; do 
+while getopts 'h:p:i:' opt; do
   case $opt in
     h) ES_HOST=$OPTARG ;;
     p) ES_PORT=$OPTARG ;;
