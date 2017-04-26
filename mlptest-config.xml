@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!-- 
+<!--
    Copyright 2010-2016 Norconex Inc.
 
    Licensed under the Apache License, Version 2.0 (the "License");
@@ -15,7 +15,7 @@
    limitations under the License.
 -->
 <!-- This configuration shows the minimum required and basic recommendations
-     to run a crawler.  
+     to run a crawler.
      -->
 <httpcollector id="MedlinePlus Test HTTP Collector">
 
@@ -28,8 +28,8 @@
 
       <userAgent>dan crawl for MedlinePlus</userAgent>
 
-      <!-- Requires at least one start URL (or urlsFile). 
-           Optionally limit crawling to same protocol/domain/port as 
+      <!-- Requires at least one start URL (or urlsFile).
+           Optionally limit crawling to same protocol/domain/port as
            start URLs. -->
       <startURLs stayOnDomain="true" stayOnPort="true" stayOnProtocol="true">
         <url>https://www.cancer.org/cancer/acute-lymphocytic-leukemia/causes-risks-prevention/risk-factors.html</url>
@@ -63,17 +63,20 @@
 
       <!-- Document importing -->
       <importer>
+        <documentCheckSummer keep="true" targetField="md5sum"/>
         <postParseHandlers>
-          <!-- If your target repository does not support arbitrary fields,
-               make sure you only keep the fields you need. -->
+          <tagger class="com.norconex.importer.handler.tagger.impl.RenameTagger">
+            <rename fromField="document.reference" toField="url" overwrite="true"/>
+          </tagger>
           <tagger class="com.norconex.importer.handler.tagger.impl.KeepOnlyTagger">
-            <fields>title,keywords,description,document.reference</fields>
+            <fields>title,keywords,description,url,md5sum,uuid</fields>
           </tagger>
         </postParseHandlers>
-      </importer> 
-      
+      </importer>
+
       <!-- Decide what to do with your files by specifying a Committer. -->
       <committer class="com.norconex.committer.elasticsearch.ElasticsearchCommitter">
+        <sourceReferenceField keep="true">url</sourceReferenceField>
         <indexName>medlineplus</indexName>
         <typeName>page</typeName>
         <queueDir>output/medlineplus/queue</queueDir>
