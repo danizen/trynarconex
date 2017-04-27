@@ -9,9 +9,10 @@
   <url>http://maven.apache.org</url>
 
   <properties>
-    <norconex.http.version>2.6.2</norconex.http.version>
-    <norconex.solr.version>2.2.0</norconex.solr.version>
-    <norconex.elastic.version>3.0.0</norconex.elastic.version>
+    <norconex.http.version>2.7.0</norconex.http.version>
+    <norconex.core.version>1.8.0</norconex.core.version>
+    <norconex.elastic.version>2.1.0</norconex.elastic.version>
+    <elasticsearch.version>2.4.5</elasticsearch.version>
     <sourceEncoding>UTF-8</sourceEncoding>
     <configfile>./minimum-config.xml</configfile>
     <varsfile>./empty.vars</varsfile>
@@ -55,36 +56,31 @@
       <scope>test</scope>
     </dependency>
 
+    <!-- Override norconex core version -->
+    <dependency>
+      <groupId>com.norconex.collectors</groupId>
+      <artifactId>norconex-collector-core</artifactId>
+      <version>${norconex.core.version}</version>
+    </dependency>
+
     <dependency>
       <groupId>com.norconex.collectors</groupId>
       <artifactId>norconex-collector-http</artifactId>
       <version>${norconex.http.version}</version>
     </dependency>
 
-    <!--
+
+    <!-- Override elasticsearch Java API version -->
     <dependency>
-      <groupId>com.norconex.collectors</groupId>
-      <artifactId>norconex-committer-solr</artifactId>
-      <version>${norconex.solr.version}</version>
+      <groupId>org.elasticsearch</groupId>
+      <artifactId>elasticsearch</artifactId>
+      <version>${elasticsearch.version}</version>
     </dependency>
-    -->
 
     <dependency>
       <groupId>com.norconex.collectors</groupId>
       <artifactId>norconex-committer-elasticsearch</artifactId>
       <version>${norconex.elastic.version}</version>
-    </dependency>
-
-    <!-- <dependency>
-      <groupId>org.elasticsearch</groupId>
-      <artifactId>elasticsearch</artifactId>
-      <version>5.3.1</version>
-    </dependency> -->
-
-    <dependency>
-      <groupId>org.apache.solr</groupId>
-      <artifactId>solr-solrj</artifactId>
-      <version>6.5.0</version>
     </dependency>
 
     <dependency>
