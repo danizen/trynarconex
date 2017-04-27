@@ -14,6 +14,7 @@
     <norconex.elastic.version>3.0.0</norconex.elastic.version>
     <sourceEncoding>UTF-8</sourceEncoding>
     <configfile>./minimum-config.xml</configfile>
+    <varsfile>./empty.vars</varsfile>
   </properties>
 
   <build>
@@ -35,6 +36,8 @@
             <argument>-classpath</argument>
             <classpath/>
             <argument>net.danizen.App</argument>
+            <argument>-v</argument>
+            <argument>${varsfile}</argument>
             <argument>-c</argument>
             <argument>${configfile}</argument>
          </arguments>
