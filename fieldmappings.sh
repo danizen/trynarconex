@@ -17,25 +17,29 @@ curl -X PUT "http://$ES_HOST:$ES_PORT/$ES_INDEX/_mappings/page?pretty=true" --da
 {
   "properties": {
     "content": {
-      "type": "text"
+      "type": "text",
+      "store": true
     },
     "description": {
-      "type": "text"
-    },
-    "document.reference": {
-      "type": "keyword"
+      "type": "text",
+      "store": true
     },
     "keywords": {
-      "type": "text"
-    },
-    "referrer": {
       "type": "keyword"
     },
     "title": {
-      "type": "text"
+      "type": "text",
+      "store": true
     },
     "url": {
       "type": "keyword"
+    },
+    "md5sum": {
+      "type": "keyword"
+    },
+    "crawled": {
+      "type": "date",
+      "format": "yyyy-MM-dd HH:mm:ss||yyyy-MM-dd||epoch_millis"
     }
   }
 }

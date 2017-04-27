@@ -14,9 +14,7 @@
    See the License for the specific language governing permissions and
    limitations under the License.
 -->
-<!-- This configuration shows the minimum required and basic recommendations
-     to run a crawler.
-     -->
+<!-- This configuration shows is an integrated crawler for cancer.org -->
 <httpcollector id="MedlinePlus Test HTTP Collector">
 
   <!-- Decide where to store generated files. -->
@@ -47,7 +45,7 @@
 
       <keepDownloads>true</keepDownloads>
 
-      <maxDocuments>100</maxDocuments>
+      <maxDocuments>40</maxDocuments>
 
       <!-- We know we don't want to crawl the entire site, so ignore sitemap. -->
       <sitemapResolverFactory ignore="true" />
@@ -67,8 +65,18 @@
           <tagger class="com.norconex.importer.handler.tagger.impl.RenameTagger">
             <rename fromField="document.reference" toField="url" overwrite="true"/>
           </tagger>
+          <tagger class="com.norconex.importer.handler.tagger.impl.SplitTagger">
+            <split fromField="keywords" regex="true">
+              <separator>\s*,\s*</separator>
+            </split>
+          </tagger>
+          <tagger class="com.norconex.importer.handler.tagger.impl.CurrentDateTagger"
+                  field="crawled"
+                  format="yyyy-MM-dd HH:mm:ss"/>
+          <tagger class="net.danizen.UUIDTagger"
+                  field="uuid" overrite="true"/>
           <tagger class="com.norconex.importer.handler.tagger.impl.KeepOnlyTagger">
-            <fields>title,keywords,description,url</fields>
+            <fields>title,keywords,description,url,uuid,md5sum,crawled</fields>
           </tagger>
         </postParseHandlers>
       </importer>
@@ -77,7 +85,7 @@
 
       <!-- Decide what to do with your files by specifying a Committer. -->
       <committer class="com.norconex.committer.elasticsearch.ElasticsearchCommitter">
-        <sourceReferenceField keep="true">url</sourceReferenceField>
+        <sourceReferenceField keep="false">uuid</sourceReferenceField>
         <indexName>medlineplus</indexName>
         <typeName>page</typeName>
         <queueDir>output/medlineplus/queue</queueDir>
