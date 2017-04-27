@@ -17,7 +17,7 @@ curl -X PUT "http://$ES_HOST:$ES_PORT/$ES_INDEX?pretty=true" --data @- <<EOF
 {
   "settings": {
     "index": {
-      "number_of_shards": 1,
+      "number_of_shards": 2,
       "number_of_replicas": 2
     }
   }

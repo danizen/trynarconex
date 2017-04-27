@@ -85,6 +85,8 @@
 
       <!-- Decide what to do with your files by specifying a Committer. -->
       <committer class="com.norconex.committer.elasticsearch.ElasticsearchCommitter">
+        <clusterName>danizen</clusterName>
+        <clusterHosts>localhost:9300,localhost:9301,localhost:9302</clusterHosts>
         <sourceReferenceField keep="false">uuid</sourceReferenceField>
         <indexName>medlineplus</indexName>
         <typeName>page</typeName>
