@@ -24,7 +24,7 @@
   #set($maxdepth = 1)
 
   #set($es_cluster = "danizen")
-  #set($es_hosts = "localhost:9300")
+  #set($es_hosts = "localhost:9300,localhost:9301,localhost:9302")
 
   #set($es_indexname = "medlineplus")
   #set($es_typename = "page")
@@ -98,8 +98,11 @@
 
       <!-- Decide what to do with your files by specifying a Committer. -->
       <committer class="com.norconex.committer.elasticsearch.ElasticsearchCommitter">
+        <clusterName>$es_cluster</clusterName>
+        <clusterHosts>$es_hosts</clusterHosts>
         <indexName>$es_indexname</indexName>
         <typeName>$es_typename</typeName>
+        <sourceReferenceField keep="false">uuid</sourceReferenceField>
         <queueDir>$workdir/queue</queueDir>
         <queueSize>$es_queuesize</queueSize>
         <commitSize>$es_commitsize</commitSize>
