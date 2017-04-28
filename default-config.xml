@@ -17,43 +17,56 @@
 <!-- This configuration shows is an integrated crawler for cancer.org -->
 <httpcollector id="MedlinePlus Test HTTP Collector">
 
+  #set($workdir = "./target/crawler")
+  #set($starturl = "https://www.nlm.nih.gov/news/newsevents.html")
+  #set($useragent = "MedlinePlus Monitor (daniel.davis@nih.gov)")
+  #set($maxdocs = -1)
+  #set($maxdepth = 1)
+
+  #set($es_cluster = "danizen")
+  #set($es_hosts = "localhost:9300")
+
+  #set($es_indexname = "medlineplus")
+  #set($es_typename = "page")
+  #set($es_queuesize = "20")
+  #set($es_commitsize = "200")
+
   <!-- Decide where to store generated files. -->
-  <progressDir>./output/medlineplus/progress</progressDir>
-  <logsDir>./output/medlineplus/logs</logsDir>
+  <progressDir>$workdir/progress</progressDir>
+  <logsDir>$workdir/logs</logsDir>
 
   <crawlers>
-    <crawler id="Norconex MedlinePlus Test">
+    <crawler id="MedlinePlus Monitor">
 
-      <userAgent>dan crawl for MedlinePlus</userAgent>
+      <userAgent>$useragent</userAgent>
 
       <!-- Requires at least one start URL (or urlsFile).
            Optionally limit crawling to same protocol/domain/port as
            start URLs. -->
       <startURLs stayOnDomain="true" stayOnPort="true" stayOnProtocol="true">
-        <url>https://www.cancer.org/cancer/acute-lymphocytic-leukemia/causes-risks-prevention/risk-factors.html</url>
+        <url>$starturl</url>
       </startURLs>
 
       <!-- === Recommendations: ============================================ -->
 
       <!-- Specify a crawler default directory where to generate files. -->
-      <workDir>./output/medlineplus</workDir>
+      <workDir>$workdir</workDir>
 
       <numThreads>5</numThreads>
 
       <!-- Put a maximum depth to avoid infinite crawling (e.g. calendars). -->
-      <maxDepth>5</maxDepth>
+      <maxDepth>$maxdepth</maxDepth>
 
-      <keepDownloads>true</keepDownloads>
-
-      <maxDocuments>40</maxDocuments>
+      <maxDocuments>$maxdocs</maxDocuments>
 
       <!-- We know we don't want to crawl the entire site, so ignore sitemap. -->
       <sitemapResolverFactory ignore="true" />
 
       <referenceFilters>
         <filter class="com.norconex.collector.core.filter.impl.ExtensionReferenceFilter" onMatch="exclude">
-          jpg,gif,png,ico,css,js
+          jpg,gif,png,ico,css,js,svg
         </filter>
+        <filter class="com.norconex.collector.core.filter.impl.RegexReferenceFilter">https://[^/]+/news/.*</filter>
       </referenceFilters>
 
       <!-- Be as nice as you can to sites you crawl. -->
@@ -81,18 +94,15 @@
         </postParseHandlers>
       </importer>
 
-      <documentCheckSummer keep="true" targetField="md5sum"/>
+      <documentChecksummer keep="true" targetField="md5sum"/>
 
       <!-- Decide what to do with your files by specifying a Committer. -->
       <committer class="com.norconex.committer.elasticsearch.ElasticsearchCommitter">
-        <clusterName>danizen</clusterName>
-        <clusterHosts>localhost:9300,localhost:9301,localhost:9302</clusterHosts>
-        <sourceReferenceField keep="false">uuid</sourceReferenceField>
-        <indexName>medlineplus</indexName>
-        <typeName>page</typeName>
-        <queueDir>output/medlineplus/queue</queueDir>
-        <queueSize>20</queueSize>
-        <commitSize>10</commitSize>
+        <indexName>$es_indexname</indexName>
+        <typeName>$es_typename</typeName>
+        <queueDir>$workdir/queue</queueDir>
+        <queueSize>$es_queuesize</queueSize>
+        <commitSize>$es_commitsize</commitSize>
       </committer>
 
     </crawler>

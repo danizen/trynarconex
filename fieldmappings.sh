@@ -3,7 +3,7 @@
 ES_HOST=localhost
 ES_PORT=9200
 ES_INDEX=medlineplus
-ES_VERSION=5
+ES_VERSION=2
 
 while getopts 'h:p:i:v:' opt; do
   case $opt in
