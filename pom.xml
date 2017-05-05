@@ -17,8 +17,9 @@
     <elasticsearch.version>2.4.5</elasticsearch.version>
     <skrapi.version>2.3</skrapi.version>
     <sourceEncoding>UTF-8</sourceEncoding>
-    <configfile>./default-config.xml</configfile>
-    <varsfile>./default.properties</varsfile>
+    <exec.action>start</exec.action>
+    <exec.configfile>src/main/assembly/default-config.xml</exec.configfile>
+    <exec.varsfile>src/main/assembly/default.properties</exec.varsfile>
   </properties>
 
   <build>
@@ -120,11 +121,13 @@
           <arguments>
             <argument>-classpath</argument>
             <classpath/>
-            <argument>net.danizen.App</argument>
+            <argument>com.norconex.collector.http.HttpCollector</argument>
+            <argument>-a</argument>
+            <argument>${exec.action}</argument>
             <argument>-v</argument>
-            <argument>${varsfile}</argument>
+            <argument>${exec.varsfile}</argument>
             <argument>-c</argument>
-            <argument>${configfile}</argument>
+            <argument>${exec.configfile}</argument>
          </arguments>
         </configuration>
       </plugin>
