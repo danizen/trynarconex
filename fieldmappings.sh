@@ -55,6 +55,10 @@ curl -X PUT "http://$ES_HOST:$ES_PORT/$ES_INDEX/_mappings/page?pretty=true" --da
     "crawled": {
       "type": "date",
       "format": "yyyy-MM-dd HH:mm:ss||yyyy-MM-dd||epoch_millis"
+    },
+    "status": {
+      $NOTANALYZED
+      "type":  "$KEYWORDTYPE"
     }
   }
 }

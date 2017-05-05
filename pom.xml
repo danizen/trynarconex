@@ -13,6 +13,7 @@
     <norconex.core.version>1.8.0</norconex.core.version>
     <norconex.elastic.version>2.1.0</norconex.elastic.version>
     <elasticsearch.version>2.4.5</elasticsearch.version>
+    <skrapi.version>2.3</skrapi.version>
     <sourceEncoding>UTF-8</sourceEncoding>
     <configfile>./default-config.xml</configfile>
     <varsfile>./default.properties</varsfile>
@@ -69,13 +70,19 @@
       <version>${norconex.http.version}</version>
     </dependency>
 
-
     <!-- Override elasticsearch Java API version -->
     <dependency>
       <groupId>org.elasticsearch</groupId>
       <artifactId>elasticsearch</artifactId>
       <version>${elasticsearch.version}</version>
     </dependency>
+
+    <!-- Add the MTI document classifier -->
+    <!-- <dependency>
+      <groupId>gov.nih.nlm.nls</groupId>
+      <artifactId>skrapi</artifactId>
+      <version>${skrapi.version}</version>
+    </dependency> -->
 
     <dependency>
       <groupId>com.norconex.collectors</groupId>

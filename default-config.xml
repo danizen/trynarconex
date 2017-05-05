@@ -24,7 +24,7 @@
   #set($maxdepth = 1)
 
   #set($es_cluster = "danizen")
-  #set($es_hosts = "localhost:9300,localhost:9301,localhost:9302")
+  #set($es_hosts = "localhost:9300")
 
   #set($es_indexname = "medlineplus")
   #set($es_typename = "page")
@@ -75,6 +75,11 @@
       <!-- Document importing -->
       <importer>
         <postParseHandlers>
+          <!--
+          <transformer class="com.norconex.importer.handler.transformer.impl.ReduceConsecutivesTransformer">
+            <reduce>\r\n\t\s</reduce>
+          </transformer>
+          -->
           <tagger class="com.norconex.importer.handler.tagger.impl.RenameTagger">
             <rename fromField="document.reference" toField="url" overwrite="true"/>
           </tagger>
@@ -83,13 +88,17 @@
               <separator>\s*,\s*</separator>
             </split>
           </tagger>
+          <tagger class="com.norconex.importer.handler.tagger.impl.ConstantTagger" onConflict="noop">
+            <constant name="status">new</constant>
+          </tagger>
           <tagger class="com.norconex.importer.handler.tagger.impl.CurrentDateTagger"
                   field="crawled"
                   format="yyyy-MM-dd HH:mm:ss"/>
           <tagger class="net.danizen.UUIDTagger"
                   field="uuid" overrite="true"/>
           <tagger class="com.norconex.importer.handler.tagger.impl.KeepOnlyTagger">
-            <fields>title,keywords,description,url,uuid,md5sum,crawled</fields>
+            <fields>title,keywords,description,url,uuid,md5sum,crawled,status</fields>
+            <fieldsRegex>DC.*</fieldsRegex>
           </tagger>
         </postParseHandlers>
       </importer>
@@ -107,6 +116,12 @@
         <queueSize>$es_queuesize</queueSize>
         <commitSize>$es_commitsize</commitSize>
       </committer>
+
+      <!--
+      <committer class="com.norconex.committer.core.impl.FileSystemCommitter">
+        <directory>$workdir/files</directory>
+      </committer>
+      -->
 
     </crawler>
   </crawlers>
