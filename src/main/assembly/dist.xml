@@ -1,4 +1,4 @@
-<!-- 
+<!--
    Copyright 2010-2016 Norconex Inc.
 
    Licensed under the Apache License, Version 2.0 (the "License");
@@ -23,29 +23,22 @@
   <includeSiteDirectory>false</includeSiteDirectory>
   <fileSets>
     <fileSet>
-      <directory>${basedir}/src/site/resources/examples</directory>
-      <includes>
-        <include>**</include>
-      </includes>
-      <outputDirectory>/examples</outputDirectory>
-    </fileSet>
-    <fileSet>
       <directory>${basedir}/src/main/assembly/</directory>
       <excludes>
         <exclude>dist.xml</exclude>
-        <exclude>CLASSES_README.txt</exclude>        
+        <exclude>CLASSES_README.txt</exclude>
       </excludes>
       <includes>
         <include>scripts/**</include>
         <include>third-party/**</include>
         <include>*.txt</include>
         <include>collector*</include>
+        <include>createindex.sh</include>
+        <include>deleteindex.sh</include>
+        <include>fieldmappings.sh</include>
+        <include>default*</include>
       </includes>
       <outputDirectory>/</outputDirectory>
-    </fileSet>
-    <fileSet>
-      <directory>${project.build.directory}/site/apidocs</directory>
-      <outputDirectory>apidocs</outputDirectory>
     </fileSet>
     <fileSet>
       <directory>${project.build.directory}/shared-resources</directory>
@@ -53,7 +46,7 @@
         <exclude>install*</exclude>
       </excludes>
       <outputDirectory>/</outputDirectory>
-    </fileSet>    
+    </fileSet>
     <fileSet>
       <directory>${project.build.directory}/generated-resources</directory>
       <outputDirectory>third-party</outputDirectory>
@@ -79,7 +72,7 @@
   <dependencySets>
     <dependencySet>
       <outputDirectory>lib</outputDirectory>
-      <outputFileNameMapping>${artifact.artifactId}-${artifact.baseVersion}.${artifact.extension}</outputFileNameMapping>      
+      <outputFileNameMapping>${artifact.artifactId}-${artifact.baseVersion}.${artifact.extension}</outputFileNameMapping>
     </dependencySet>
   </dependencySets>
 </assembly>

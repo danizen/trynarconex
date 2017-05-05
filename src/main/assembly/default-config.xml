@@ -17,7 +17,7 @@
 <!-- This configuration shows is an integrated crawler for cancer.org -->
 <httpcollector id="MedlinePlus Test HTTP Collector">
 
-  #set($workdir = "./target/crawler")
+  #set($workdir = "./defaultcrawl")
   #set($starturl = "https://www.nlm.nih.gov/news/newsevents.html")
   #set($useragent = "MedlinePlus Monitor (daniel.davis@nih.gov)")
   #set($maxdocs = -1)
