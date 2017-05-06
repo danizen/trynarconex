@@ -79,8 +79,12 @@
               <toValue xml:space="preserve"> </toValue>
             </replace>
           </transformer>
+          <tagger class="com.norconex.importer.handler.tagger.impl.LanguageTagger">
+            <languages>en, es</languages>
+          </tagger>
           <tagger class="com.norconex.importer.handler.tagger.impl.RenameTagger">
             <rename fromField="document.reference" toField="url" overwrite="true"/>
+            <rename fromField="document.language" toField="language"/>
           </tagger>
           <tagger class="com.norconex.importer.handler.tagger.impl.SplitTagger">
             <split fromField="keywords" regex="true">
@@ -103,7 +107,7 @@
                   format="yyyy-MM-dd HH:mm:ss"/>
           <tagger class="net.danizen.UUIDTagger" field="uuid" overwrite="true"/>
           <tagger class="com.norconex.importer.handler.tagger.impl.KeepOnlyTagger">
-            <fields>title,keywords,description,url,uuid,md5sum,crawled,domain,status</fields>
+            <fields>title,keywords,description,url,uuid,md5sum,crawled,domain,status,language</fields>
             <fieldsRegex>DC.*</fieldsRegex>
           </tagger>
         </postParseHandlers>

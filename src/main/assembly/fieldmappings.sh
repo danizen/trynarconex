@@ -51,7 +51,11 @@ curl -X PUT "http://$ES_HOST:$ES_PORT/$ES_INDEX/_mappings/page?pretty=true" --da
     "domain": {
       $NOTANALYZED
       "type": "$KEYWORDTYPE"
-    }
+    },
+    "language": {
+      $NOTANALYZED
+      "type": "$KEYWORDTYPE"
+    },
     "md5sum": {
       $NOTANALYZED
       "type": "$KEYWORDTYPE"
