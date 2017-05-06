@@ -23,9 +23,7 @@
   #set($maxdocs = -1)
   #set($maxdepth = 1)
 
-  #set($es_cluster = "danizen")
   #set($es_hosts = "localhost:9300")
-
   #set($es_indexname = "medlineplus")
   #set($es_typename = "page")
   #set($es_queuesize = "20")
@@ -75,11 +73,12 @@
       <!-- Document importing -->
       <importer>
         <postParseHandlers>
-          <!--
-          <transformer class="com.norconex.importer.handler.transformer.impl.ReduceConsecutivesTransformer">
-            <reduce>\r\n\t\s</reduce>
+          <transformer class="com.norconex.importer.handler.transformer.impl.ReplaceTransformer">
+            <replace>
+              <fromValue>[\r\n\t\s]+</fromValue>
+              <toValue xml:space="preserve"> </toValue>
+            </replace>
           </transformer>
-          -->
           <tagger class="com.norconex.importer.handler.tagger.impl.RenameTagger">
             <rename fromField="document.reference" toField="url" overwrite="true"/>
           </tagger>
@@ -94,8 +93,7 @@
           <tagger class="com.norconex.importer.handler.tagger.impl.CurrentDateTagger"
                   field="crawled"
                   format="yyyy-MM-dd HH:mm:ss"/>
-          <tagger class="net.danizen.UUIDTagger"
-                  field="uuid" overrite="true"/>
+          <tagger class="net.danizen.UUIDTagger" field="uuid" overwrite="true"/>
           <tagger class="com.norconex.importer.handler.tagger.impl.KeepOnlyTagger">
             <fields>title,keywords,description,url,uuid,md5sum,crawled,status</fields>
             <fieldsRegex>DC.*</fieldsRegex>
@@ -107,7 +105,6 @@
 
       <!-- Decide what to do with your files by specifying a Committer. -->
       <committer class="com.norconex.committer.elasticsearch.ElasticsearchCommitter">
-        <clusterName>$es_cluster</clusterName>
         <clusterHosts>$es_hosts</clusterHosts>
         <indexName>$es_indexname</indexName>
         <typeName>$es_typename</typeName>
