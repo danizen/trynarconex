@@ -1,9 +1,11 @@
 # Tasks to get to something good
 
-- Add a domain field
 - Read more from Elasticsearch In Action book
 - Get rest committer to work for me
-- Package it with an assembly or into a single JAR
+
+# Advanced tasks that aren't really needed right now
+
 - Test for UUIDTagger
-- Experiment with Summarization API
 - Develop some sort of UI
+- Write a Summarizer using sumy implementation as guide
+

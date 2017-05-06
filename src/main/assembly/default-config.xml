@@ -87,6 +87,14 @@
               <separator>\s*,\s*</separator>
             </split>
           </tagger>
+          <tagger class="com.norconex.importer.handler.tagger.impl.ScriptTagger">
+            <script><![CDATA[
+              var expr = new RegExp('[a-z]+://([^/]+).*');
+              var url = metadata.url[0];
+              var domain = url.replace(expr, '$1');
+              metadata.addString('domain', domain);
+            ]]></script>
+          </tagger>
           <tagger class="com.norconex.importer.handler.tagger.impl.ConstantTagger" onConflict="noop">
             <constant name="status">new</constant>
           </tagger>
@@ -95,7 +103,7 @@
                   format="yyyy-MM-dd HH:mm:ss"/>
           <tagger class="net.danizen.UUIDTagger" field="uuid" overwrite="true"/>
           <tagger class="com.norconex.importer.handler.tagger.impl.KeepOnlyTagger">
-            <fields>title,keywords,description,url,uuid,md5sum,crawled,status</fields>
+            <fields>title,keywords,description,url,uuid,md5sum,crawled,domain,status</fields>
             <fieldsRegex>DC.*</fieldsRegex>
           </tagger>
         </postParseHandlers>
