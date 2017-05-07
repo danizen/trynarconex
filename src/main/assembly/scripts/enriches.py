@@ -7,7 +7,7 @@ from sumy.parsers.plaintext import PlaintextParser
 from sumy.nlp.stemmers import Stemmer
 from sumy.nlp.tokenizers import Tokenizer
 from sumy.utils import get_stop_words
-from sumy.summarizers.lexrank import LexRankSummarizer
+from sumy.summarizers.lex_rank import LexRankSummarizer
 from elasticsearch import Elasticsearch
 import argparse
 from os.path import basename
@@ -29,10 +29,10 @@ class Enricher(object):
         """
         yields the summary on a hit to facilitate building bulk update
         """
-        assert content_field in fields
-        content = hit[self.content_field]
-        language = hit[self.lang_field] if self.lang_field in fields else 'en'
-        parser = PlaintextParser.from_string(content, Tokenizer[language])
+        assert self.content_field in fields
+        content = fields[self.content_field][0]
+        language = fields[self.lang_field][0] if self.lang_field in fields else 'en'
+        parser = PlaintextParser.from_string(content, Tokenizer(language))
         stemmer = Stemmer(language)
         summarizer = LexRankSummarizer(stemmer)
         summarizer.stop_words = get_stop_words(language)
@@ -86,7 +86,7 @@ def search(es, indexname, typename, count=10):
 def summarize(hit, enricher):
     assert '_source' in hit
     fields = hit['_source']
-    return enricher.summarize_one(fields)
+    return enricher.summarize(fields)
 
 
 def main(args):
