@@ -15,6 +15,12 @@ import sys
 import json
 
 
+LANGUAGE_MAP = {
+    'en': 'english',
+    'es': 'spanish'
+}
+
+
 class Enricher(object):
     """
     Knows how to enrich a set of fields with a summary and maybe other stuff
@@ -32,12 +38,13 @@ class Enricher(object):
         assert self.content_field in fields
         content = fields[self.content_field][0]
         language = fields[self.lang_field][0] if self.lang_field in fields else 'en'
+        language = LANGUAGE_MAP[language]
         parser = PlaintextParser.from_string(content, Tokenizer(language))
         stemmer = Stemmer(language)
         summarizer = LexRankSummarizer(stemmer)
         summarizer.stop_words = get_stop_words(language)
 
-        sentences = [sentence in summarizer(parser.document, self.count)]
+        sentences = [str(s) for s in summarizer(parser.document, self.count)]
         summary = ' '.join(sentences)
         return summary
 
@@ -57,12 +64,16 @@ def parse_arguments(args):
         help="The type to enhance",
     )
     parser.add_argument(
-        '--content', '-f', metavar="FIELDNAME", default="content",
+        '--textfld', metavar="FIELDNAME", default="content",
         help="The name of the content field",
     )
     parser.add_argument(
+        '--langfld', metavar="FIELDNAME", default='language',
+        help="The name of the language field",
+    )
+    parser.add_argument(
         '--count', '-c', metavar="COUNT", default=10, type=int,
-        help="How many documents to summarize at a time",
+        help="How many sentences to use for the summary",
     )
     parser.add_argument(
         '--summary', '-s', metavar="FIELDNAME", default="basicsum",
@@ -99,9 +110,9 @@ def main(args):
     assert 'hits' in hits
 
     enricher = Enricher(
-        content_field=opts.content_field,
-        lang_field='language',
-        count=10,
+        content_field=opts.textfld,
+        lang_field=opts.langfld,
+        count=opts.count,
     )
 
     for hit in hits['hits']:
