@@ -16,24 +16,26 @@
 
 The crawl is *not* stripping boiler plate, and it is not going deep enough.
 
-The lack of boilerplate removal is a big problem for building quality summaries,because we lose the ability to extract sentences - OpenNLP nor NLTK can effectively deal with "Skip navigation Home Healthy Living Volunteering Donate The point we wish to make about nutrition..."
+The lack of boilerplate removal is a big problem for building quality summaries,because we lose the ability to extract sentences - OpenNLP nor NLTK can effectively deal with "Skip navigation Home Healthy Living Volunteering Donate The point we wish to make about nutrition...".  This can be addressed as follows:
+	* Add a pre-import document transformers that applies the Goose article extractor library or Scackstory exctractor.
+	* Maybe safer to ignore individual sections of the documents in a smart way.
 
 The issue with depth has to do with either robots.txt and depth meters.  When I set the depth to 4 and crawl from the top of "http://www.cancer.org", then I don't find much of anything - I get 52 documents period.  We'll have to experiment and use domain as a facet to see which domains are being crawled well, and why/why not.
 
 # Writing a summarizer
 
-After reviewing the documentation for the summarizers in Sumy, I'm quite happy 
-implementing the following sentence extraction summarizers, TfIdfSummarizer, 
+After reviewing the documentation for the summarizers in Sumy, I'm quite happy
+implementing the following sentence extraction summarizers, TfIdfSummarizer,
 which is based solely on the tfidf of terms over the entire crawl, DegreeSummarizer, which is the simpler summarizer with cut-off of .1 discussed in the Lex Rank paper, and LexRankSummarizer.   A SumBasicSummarizer could also be implemented.
 
 To use true IDF, these have to be done after the fact, not within the crawl,
-because otherwise IDF is nearly meaningless.  What do you do?  Make each 
-sentence a document?  No, using the term info from elastic search is 
+because otherwise IDF is nearly meaningless.  What do you do?  Make each
+sentence a document?  No, using the term info from elastic search is
 clearly the way to go.
 
-Because of the analysis above, there is no need to blindly 
+Because of the analysis above, there is no need to blindly
 
-sumy/summarizers/_summarizer.py --> 
+sumy/summarizers/_summarizer.py -->
 	net.danizen.nlp.summary.ISummarizer
 	net.danizen.nlp.summary.SentenceInfo
 	net.danizen.nlp.summary.AbstractSummarizer
