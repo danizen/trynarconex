@@ -5,9 +5,13 @@
 
 # Advanced tasks that aren't really needed right now
 
-- Test for UUIDTagger
+- Split the indexing by using the LanguageTagger to tag the language,
+  and then index english to an index with an english analyzer, and spanish
+  to an index with a spanish analyzer.  Don't index pages in german.
+  (this is probably over-engineering)
 - Develop some sort of UI
 - Write a Summarizer using sumy implementation as guide
+
 
 # Writing a summarizer
 

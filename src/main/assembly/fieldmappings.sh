@@ -25,12 +25,23 @@ else
   NOTANALYZED='"index": "not_analyzed",'
 fi
 
+
+# Field mappings could also be provided in the create-index script.
+
+# Field mappings can turn off the dynamic indexing for a type, by
+# putting "dynamic": false, before the "properties" of that type.
+
+# Index the URL with "fields" so it is both un-analyzed and analyzed
+
+# Turn the "status" field into an "enrichments" field that has a "null_value".
+# It's initial value is the null value, and later we write the various 
+# enrichments that are done.
+
 curl -X PUT "http://$ES_HOST:$ES_PORT/$ES_INDEX/_mappings/page?pretty=true" --data @- <<EOF
 {
   "properties": {
     "content": {
-      "type": "$TEXTTYPE",
-      "store": true
+      "type": "$TEXTTYPE"
     },
     "description": {
       "type": "$TEXTTYPE",
@@ -46,7 +57,8 @@ curl -X PUT "http://$ES_HOST:$ES_PORT/$ES_INDEX/_mappings/page?pretty=true" --da
     },
     "url": {
       $NOTANALYZED
-      "type": "$KEYWORDTYPE"
+      "type": "$KEYWORDTYPE",
+      "store": true
     },
     "domain": {
       $NOTANALYZED
@@ -58,11 +70,13 @@ curl -X PUT "http://$ES_HOST:$ES_PORT/$ES_INDEX/_mappings/page?pretty=true" --da
     },
     "md5sum": {
       $NOTANALYZED
-      "type": "$KEYWORDTYPE"
+      "type": "$KEYWORDTYPE",
+      "store": true
     },
     "crawled": {
       "type": "date",
-      "format": "yyyy-MM-dd HH:mm:ss||yyyy-MM-dd||epoch_millis"
+      "format": "yyyy-MM-dd HH:mm:ss||yyyy-MM-dd||epoch_millis",
+      "store": true
     },
     "status": {
       $NOTANALYZED

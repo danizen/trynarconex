@@ -83,10 +83,28 @@ def parse_arguments(args):
 
 
 def search(es, indexname, typename, count=10):
+    # NOTE: multi_match queries default to dis_max,
+    #       and that is where the boosts are put, in the fields
+    #       parameter.
+
+    # TODO: Use from and size to paginate
+    #       Use scroll (see Search API) to paginate all "new" results
+
+    # TODO: Specify the "fields" that we want to get back to avoid
+    #       the cost of fetching the "_source".
+
+    # TODO: Use a fitered query to generate results faster, since
+    #       we will skip scoring
+
+    # TODO: aggregations are facets.
     body = {
         'query': {
-            'term': {
-                'status': 'new'
+            'filtered': {
+                'filter': {
+                    'term': {
+                        'status': 'new'
+                    }
+                }
             }
         }
     }
