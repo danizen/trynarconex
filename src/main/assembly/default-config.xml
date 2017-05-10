@@ -108,7 +108,7 @@
           <tagger class="net.danizen.UUIDTagger" field="uuid" overwrite="true"/>
           <tagger class="com.norconex.importer.handler.tagger.impl.KeepOnlyTagger">
             <fields>title,keywords,description,url,uuid,md5sum,crawled,domain,status,language</fields>
-            <fieldsRegex>DC.*</fieldsRegex>
+            <!-- <fieldsRegex>DC.*</fieldsRegex> -->
           </tagger>
         </postParseHandlers>
       </importer>
@@ -116,8 +116,8 @@
       <documentChecksummer keep="true" targetField="md5sum"/>
 
       <!-- Decide what to do with your files by specifying a Committer. -->
-      <committer class="com.norconex.committer.elasticsearch.ElasticsearchCommitter">
-        <clusterHosts>$es_hosts</clusterHosts>
+      <committer class="net.danizen.norconex.committer.ElasticsearchCommitter">
+        <serverUrl>http://localhost:9200</serverUrl>
         <indexName>$es_indexname</indexName>
         <typeName>$es_typename</typeName>
         <sourceReferenceField keep="false">uuid</sourceReferenceField>
