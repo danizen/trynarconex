@@ -1,19 +1,19 @@
 #!/bin/bash
 
-ES_HOST=localhost
-ES_PORT=9200
-ES_INDEX=medlineplus
+ES_HOST=http://localhost:9200
+ES_INDEX=mplusadmin
+ES_USER=""
 
-while getopts 'h:p:i:' opt; do
+while getopts 'h:i:u:' opt; do
   case $opt in
     h) ES_HOST=$OPTARG ;;
-    p) ES_PORT=$OPTARG ;;
     i) ES_INDEX=$OPTARG ;;
+    u) ES_USER="-u $OPTARG" ;;
     \?) echo "Invalid option: -$OPTARG" >&2; exit 1 ;;
   esac
 done
 
-curl -X PUT "http://$ES_HOST:$ES_PORT/$ES_INDEX?pretty=true" --data @- <<EOF
+curl -X PUT "$ES_HOST/$ES_INDEX?pretty=true" $ES_USER --data @- <<EOF
 {
   "settings": {
     "index": {

@@ -1,15 +1,15 @@
 #!/bin/bash
 
-ES_HOST=localhost
-ES_PORT=9200
-ES_INDEX=medlineplus
+ES_HOST=http://localhost:9200
+ES_INDEX=mplusadmin
+ES_USER=""
 ES_VERSION=2
 
-while getopts 'h:p:i:v:' opt; do
+while getopts 'h:i:u:v:' opt; do
   case $opt in
     h) ES_HOST=$OPTARG ;;
-    p) ES_PORT=$OPTARG ;;
     i) ES_INDEX=$OPTARG ;;
+    u) ES_USER="-u $OPTARG" ;;
     v) ES_VERSION=$OPTARG ;;
     \?) echo "Invalid option: -$OPTARG" >&2; exit 1 ;;
   esac
@@ -37,7 +37,7 @@ fi
 # It's initial value is the null value, and later we write the various 
 # enrichments that are done.
 
-curl -X PUT "http://$ES_HOST:$ES_PORT/$ES_INDEX/_mappings/page?pretty=true" --data @- <<EOF
+curl -X PUT "$ES_HOST/$ES_INDEX/_mappings/page?pretty=true" $ES_USER --data @- <<EOF
 {
   "properties": {
     "content": {
