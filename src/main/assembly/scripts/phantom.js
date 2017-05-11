@@ -1,1 +1,0 @@
-<html><body>You are being <a href="https://raw.githubusercontent.com/Norconex/collector-http/master/norconex-collector-http/src/main/assembly/scripts/phantom.js">redirected</a>.</body></html>

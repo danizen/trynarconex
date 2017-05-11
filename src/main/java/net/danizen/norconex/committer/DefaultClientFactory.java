@@ -18,6 +18,7 @@ import io.searchbox.client.JestClient;
 import io.searchbox.client.JestClientFactory;
 import io.searchbox.client.config.HttpClientConfig;
 
+
 /**
  *
  * Returns a JestClient for the Elasticsearch host at serverUrl.
@@ -31,10 +32,17 @@ public class DefaultClientFactory implements IClientFactory {
     @Override
     public JestClient createClient(ElasticsearchCommitter committer) {
         JestClientFactory factory = new JestClientFactory();
-        factory.setHttpClientConfig(new HttpClientConfig
-                .Builder(committer.getServerUrl())
-                .multiThreaded(true)
-                .build());
+
+        HttpClientConfig.Builder builder = new HttpClientConfig.Builder(committer.getServerUrl());
+        builder.multiThreaded(true);
+
+
+        String username = committer.getUsername();
+        String password = committer.getPassword();
+        if (username != null || password != null) {
+            builder.defaultCredentials(username, password);
+        }
+        factory.setHttpClientConfig(builder.build());
 
         return factory.getObject();
     }

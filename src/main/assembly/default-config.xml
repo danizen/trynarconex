@@ -23,11 +23,13 @@
   #set($maxdocs = -1)
   #set($maxdepth = 1)
 
-  #set($es_hosts = "localhost:9300")
-  #set($es_indexname = "medlineplus")
+  #set($es_server = "http://localhost:9200")
+  #set($es_indexname = "mplusadmin")
   #set($es_typename = "page")
   #set($es_queuesize = "20")
   #set($es_commitsize = "200")
+  #set($es_username = "")
+  #set($es_password = "")
 
   <!-- Decide where to store generated files. -->
   <progressDir>$workdir/progress</progressDir>
@@ -117,7 +119,9 @@
 
       <!-- Decide what to do with your files by specifying a Committer. -->
       <committer class="net.danizen.norconex.committer.ElasticsearchCommitter">
-        <serverUrl>http://localhost:9200</serverUrl>
+        <serverUrl>$es_server</serverUrl>
+        <username>$es_username</username>
+        <password>$es_password</password>
         <indexName>$es_indexname</indexName>
         <typeName>$es_typename</typeName>
         <sourceReferenceField keep="false">uuid</sourceReferenceField>

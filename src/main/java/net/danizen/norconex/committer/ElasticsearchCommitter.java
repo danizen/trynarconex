@@ -88,6 +88,13 @@ import com.google.gson.GsonBuilder;
  *      &lt;maxRetryWait&gt;(max delay between retries)&lt;/maxRetryWait&gt;
  *  &lt;/committer&gt;
  * </pre>
+ *
+ * HTTP Basic Authentication can be added within the committer configuration:
+ *
+ * <pre>
+ *      &lt;username&gt;(Name of user)&lt;/username&gt;
+ *      &lt;password&gt;(Password or variable)&lt;/password&gt;
+ * </pre>
  */
 public class ElasticsearchCommitter extends AbstractMappedCommitter {
 
@@ -101,6 +108,8 @@ public class ElasticsearchCommitter extends AbstractMappedCommitter {
     private String serverUrl;
     private String indexName;
     private String typeName;
+    private String username;
+    private String password;
 
     /**
      * Constructor.
@@ -164,6 +173,38 @@ public class ElasticsearchCommitter extends AbstractMappedCommitter {
      */
     public void setTypeName(String typeName) {
         this.typeName = typeName;
+    }
+
+    /**
+     * Gets the username
+     * @return username
+     */
+    public String getUsername() {
+        return username;
+    }
+
+    /**
+     * Sets the username
+     * @param username user name
+     */
+    public void setUsername(String username) {
+        this.username = username;
+    }
+
+    /**
+     * Gets the password
+     * @return password
+     */
+    public String getPassword() {
+        return password;
+    }
+
+    /**
+     * Sets the password
+     * @param password the new password
+     */
+    public void setPassword(String password) {
+        this.password = password;
     }
 
     @Override
@@ -288,8 +329,8 @@ public class ElasticsearchCommitter extends AbstractMappedCommitter {
          *    .setPrettyPrinting()
          *    .create();
          * String datatosend = bulk.getData(gson);
+         * LOG.info(datatosend);
          */
-        LOG.info(datatosend);
         JestResult bulkResponse = client.execute(bulk);
 
         if (!bulkResponse.isSucceeded()) {
@@ -302,6 +343,18 @@ public class ElasticsearchCommitter extends AbstractMappedCommitter {
 
     @Override
     protected void saveToXML(XMLStreamWriter writer) throws XMLStreamException {
+
+        if (username != null) {
+            writer.writeStartElement("username");
+            writer.writeCharacters(username);
+            writer.writeEndElement();
+        }
+
+        if (password != null) {
+            writer.writeStartElement("password");
+            writer.writeCharacters(password);
+            writer.writeEndElement();
+        }
 
         writer.writeStartElement("serverUrl");
         writer.writeCharacters(serverUrl);
@@ -328,6 +381,21 @@ public class ElasticsearchCommitter extends AbstractMappedCommitter {
         } else {
             setTargetContentField(DEFAULT_ES_CONTENT_FIELD);
         }
+
+        String targetUsername = xml.getString("username");
+        if (StringUtils.isNotBlank(targetUsername)) {
+            setUsername(targetUsername);
+        } else {
+            setUsername(null);
+        }
+
+        String targetPassword = xml.getString("password");
+        if (StringUtils.isNotBlank(targetPassword)) {
+            setPassword(targetPassword);
+        } else {
+            setPassword(null);
+        }
+
         setServerUrl(xml.getString("serverUrl", null));
         setIndexName(xml.getString("indexName", null));
         setTypeName(xml.getString("typeName", null));
