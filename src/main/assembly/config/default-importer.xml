@@ -30,7 +30,7 @@
       <rename fromField="twitter:card" toField="twitter_card"/>
       <rename fromField="twitter:site" toField="twitter_site"/>
       <rename fromField="twitter:title" toField="twitter_title"/>
-      <rename fromField="twitter:image" toField="twitter_Image"/>
+      <rename fromField="twitter:image" toField="twitter_image"/>
     </tagger>
     <tagger class="com.norconex.importer.handler.tagger.impl.SplitTagger">
       <split fromField="keywords" regex="true">
