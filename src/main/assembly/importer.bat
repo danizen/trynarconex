@@ -1,0 +1,1 @@
+<html><body>You are being <a href="https://raw.githubusercontent.com/Norconex/importer/master/norconex-importer/src/main/assembly/importer.bat">redirected</a>.</body></html>

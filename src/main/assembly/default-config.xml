@@ -1,4 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE collectorconfig  [
+<!ENTITY importerconfig SYSTEM "src/main/assembly/default-importer.xml">
+]>
 <!--
    Copyright 2010-2016 Norconex Inc.
 
@@ -30,7 +33,8 @@
            Optionally limit crawling to same protocol/domain/port as
            start URLs. -->
       <startURLs stayOnDomain="true" stayOnPort="true" stayOnProtocol="true">
-        <url>$starturl</url>
+        <url>https://www.nlm.nih.gov/news/newsevents.html</url>
+        <url>http://www.webmd.com/women/tc/abortion-topic-overview</url>
       </startURLs>
 
       <!-- === Recommendations: ============================================ -->
@@ -41,7 +45,7 @@
       <numThreads>5</numThreads>
 
       <!-- Put a maximum depth to avoid infinite crawling (e.g. calendars). -->
-      <maxDepth>$maxdepth</maxDepth>
+      <maxDepth>1</maxDepth>
 
       <maxDocuments>$maxdocs</maxDocuments>
 
@@ -82,6 +86,10 @@
           <tagger class="com.norconex.importer.handler.tagger.impl.RenameTagger">
             <rename fromField="document.reference" toField="url" overwrite="true"/>
             <rename fromField="document.language" toField="language"/>
+            <!-- Rename subset of Dublin ore meta-data -->
+            <rename fromField="DC.Title" toField="dc_title"/>
+            <rename fromField="DC.Date.Issued" toField="dc_date_issued"/>
+            <rename fromField="DC.Date.Modified" toField="dc_date_modified"/>
           </tagger>
           <tagger class="com.norconex.importer.handler.tagger.impl.SplitTagger">
             <split fromField="keywords" regex="true">
@@ -102,18 +110,24 @@
           <tagger class="com.norconex.importer.handler.tagger.impl.CurrentDateTagger"
                   field="crawled"
                   format="yyyy-MM-dd HH:mm:ss"/>
-          <tagger class="net.danizen.UUIDTagger" field="uuid" overwrite="true"/>
+          <tagger class="com.norconex.importer.handler.tagger.impl.UUIDTagger" field="uuid" overwrite="true"/>
+
           <tagger class="com.norconex.importer.handler.tagger.impl.KeepOnlyTagger">
             <fields>title,keywords,description,url,uuid,md5sum,crawled,domain,status,language</fields>
-            <!-- <fieldsRegex>DC.*</fieldsRegex> -->
+            <fieldsRegex>dc_.*</fieldsRegex>
+            <fieldsRegex>og:.*</fieldsRegex>
+            <fieldsRegex>fb:.**</fieldsRegex>
+            <fieldsRegex>article:.**</fieldsRegex>
+
           </tagger>
         </postParseHandlers>
       </importer>
 
+
       <documentChecksummer keep="true" targetField="md5sum"/>
 
       <!-- Decide what to do with your files by specifying a Committer. -->
-      <committer class="net.danizen.norconex.committer.ElasticsearchCommitter">
+      <!-- <committer class="net.danizen.norconex.committer.ElasticsearchCommitter">
         <serverUrl>$es_server</serverUrl>
         <username>$es_username</username>
         <password>$es_password</password>
@@ -123,13 +137,11 @@
         <queueDir>$workdir/queue</queueDir>
         <queueSize>$es_queuesize</queueSize>
         <commitSize>$es_commitsize</commitSize>
-      </committer>
+      </committer> -->
 
-      <!--
       <committer class="com.norconex.committer.core.impl.FileSystemCommitter">
         <directory>$workdir/files</directory>
       </committer>
-      -->
 
     </crawler>
   </crawlers>

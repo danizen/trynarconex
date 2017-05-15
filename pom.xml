@@ -16,9 +16,12 @@
     <norconex.committer.version>2.1.0</norconex.committer.version>
     <skrapi.version>2.3</skrapi.version>
     <sourceEncoding>UTF-8</sourceEncoding>
-    <exec.action>start</exec.action>
-    <exec.configfile>src/main/assembly/default-config.xml</exec.configfile>
-    <exec.varsfile>src/main/assembly/default.properties</exec.varsfile>
+    <crawl.action>start</crawl.action>
+    <crawl.config>src/main/assembly/default-config.xml</crawl.config>
+    <crawl.vars>src/main/assembly/default.properties</crawl.vars>
+    <importer.config>src/main/assembly/default-importer.xml</importer.config>
+    <importer.input>testdata/www.webmd.com-allergies-default.htm</importer.input>
+    <importer.output>importer-output.txt</importer.output>
   </properties>
 
   <build>
@@ -104,29 +107,6 @@
           </execution>
         </executions>
       </plugin>
-      <plugin>
-        <groupId>org.codehaus.mojo</groupId>
-        <artifactId>exec-maven-plugin</artifactId>
-        <version>1.6.0</version>
-        <executions>
-          <execution>
-            <goals>
-              <goal>java</goal>
-            </goals>
-          </execution>
-        </executions>
-        <configuration>
-          <mainClass>com.norconex.collector.http.HttpCollector</mainClass>
-          <arguments>
-            <argument>-a</argument>
-            <argument>${exec.action}</argument>
-            <argument>-v</argument>
-            <argument>${exec.varsfile}</argument>
-            <argument>-c</argument>
-            <argument>${exec.configfile}</argument>
-         </arguments>
-        </configuration>
-      </plugin>
     </plugins>
   </build>
 
@@ -159,6 +139,12 @@
     </dependency>
 
     <dependency>
+      <groupId>org.mongodb</groupId>
+      <artifactId>mongo-java-driver</artifactId>
+      <version>3.4.2</version>
+    </dependency>
+
+    <dependency>
       <groupId>io.searchbox</groupId>
       <artifactId>jest</artifactId>
       <version>2.4.0</version>
@@ -178,5 +164,70 @@
     </dependency>
 
   </dependencies>
+
+  <profiles>
+    <profile>
+      <id>crawler</id>
+      <build>
+        <plugins>
+          <plugin>
+            <groupId>org.codehaus.mojo</groupId>
+            <artifactId>exec-maven-plugin</artifactId>
+            <version>1.6.0</version>
+            <executions>
+              <execution>
+                <goals>
+                  <goal>java</goal>
+                </goals>
+              </execution>
+            </executions>
+            <configuration>
+              <mainClass>com.norconex.collector.http.HttpCollector</mainClass>
+              <arguments>
+                <argument>-a</argument>
+                <argument>${crawl.action}</argument>
+                <argument>-v</argument>
+                <argument>${crawl.vars}</argument>
+                <argument>-c</argument>
+                <argument>${crawl.config}</argument>
+             </arguments>
+            </configuration>
+          </plugin>
+        </plugins>
+      </build>
+    </profile>
+    <profile>
+      <id>importer</id>
+      <build>
+        <plugins>
+          <plugin>
+            <groupId>org.codehaus.mojo</groupId>
+            <artifactId>exec-maven-plugin</artifactId>
+            <version>1.6.0</version>
+            <executions>
+              <execution>
+                <goals>
+                  <goal>java</goal>
+                </goals>
+              </execution>
+            </executions>
+            <configuration>
+              <mainClass>com.norconex.importer.Importer</mainClass>
+              <arguments>
+                <argument>-t</argument>
+                <argument>"text/html; charset=utf-8"</argument>
+                <argument>-c</argument>
+                <argument>${importer.config}</argument>
+                <argument>-i</argument>
+                <argument>${importer.input}</argument>
+                <argument>-o</argument>
+                <argument>${importer.output}</argument>
+             </arguments>
+            </configuration>
+          </plugin>
+        </plugins>
+      </build>
+    </profile>
+  </profiles>
 
 </project>
