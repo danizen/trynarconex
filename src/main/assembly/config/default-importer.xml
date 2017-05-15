@@ -21,11 +21,16 @@
       <rename fromField="dc:title" toField="dc_title"/>
       <rename fromField="DC.Date.Issued" toField="dc_date_issued"/>
       <rename fromField="DC.Date.Modified" toField="dc_date_modified"/>
-      <!-- Rename subset of OpenGraph mete-data -->
+      <!-- Rename subset of OpenGraph meta-data -->
       <rename fromField="og:title" toField="og_title"/>
       <rename fromField="og:site_name" toField="og_site_name"/>
       <rename fromField="og:type" toField="og_type"/>
       <rename fromField="og:image" toField="og_image"/>
+      <!-- Rename subset of twitter card meta-data -->
+      <rename fromField="twitter:card" toField="twitter_card"/>
+      <rename fromField="twitter:site" toField="twitter_site"/>
+      <rename fromField="twitter:title" toField="twitter_title"/>
+      <rename fromField="twitter:image" toField="twitter_Image"/>
     </tagger>
     <tagger class="com.norconex.importer.handler.tagger.impl.SplitTagger">
       <split fromField="keywords" regex="true">
@@ -50,7 +55,7 @@
 
     <tagger class="com.norconex.importer.handler.tagger.impl.KeepOnlyTagger">
       <fields>title,keywords,description,url,uuid,md5sum,crawled,domain,status,language</fields>
-      <fieldsRegex>(dc_|og_).*</fieldsRegex>
+      <fieldsRegex>(dc_|og_|twitter_).*</fieldsRegex>
     </tagger>
   </postParseHandlers>
 </importer>
