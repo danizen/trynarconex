@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE collectorconfig  [
-<!ENTITY importerconfig SYSTEM "src/main/assembly/default-importer.xml">
+<!ENTITY importerconfig SYSTEM "./config/default-importer.xml">
 ]>
 <!--
    Copyright 2010-2016 Norconex Inc.

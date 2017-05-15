@@ -17,11 +17,11 @@
     <skrapi.version>2.3</skrapi.version>
     <sourceEncoding>UTF-8</sourceEncoding>
     <crawl.action>start</crawl.action>
-    <crawl.config>src/main/assembly/default-config.xml</crawl.config>
+    <crawl.config>src/main/assembly/config/default-collector.xml</crawl.config>
     <crawl.vars>src/main/assembly/default.properties</crawl.vars>
-    <importer.config>src/main/assembly/default-importer.xml</importer.config>
+    <importer.config>src/main/assembly/config/default-importer.xml</importer.config>
     <importer.input>testdata/www.webmd.com-allergies-default.htm</importer.input>
-    <importer.output>importer-output.txt</importer.output>
+    <importer.output>importer.txt</importer.output>
   </properties>
 
   <build>
