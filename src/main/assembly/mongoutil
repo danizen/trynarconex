@@ -1,0 +1,58 @@
+#!/usr/bin/env python
+from pymongo import MongoClient
+import sys
+import argparse
+import json
+
+
+DEFAULT_HOST = 'localhost'
+DEFAULT_PORT = 27017
+DEFAULT_MECHANISM = 'SCRAM-SHA-1'
+
+
+def parse_args(args):
+    parser = argparse.ArgumentParser(description='Manage MongoDB database and provide statistics')
+    parser.add_argument('operation', choices=['clear', 'info', 'collections'])
+    parser.add_argument('--host', metavar="NAME_OR_IP", default=DEFAULT_HOST,
+                        help='Hostname or IP address (default %s)' % DEFAULT_HOST)
+    parser.add_argument('--port', metavar="NUMBER", type=int, default=27017,
+                        help='Port number (default %d)' % DEFAULT_PORT)
+    parser.add_argument('--dbname', '-d', metavar='NAME', default=None,
+                        help='Database name')
+    parser.add_argument('--username', '-u', metavar='USERNAME', default=None,
+                        help='Username for authentication')
+    parser.add_argument('--password', '-p', metavar='PASSWORD', default=None,
+                        help='Password for authentication')
+    return parser.parse_args(args)
+
+
+def main(args):
+    opts = parse_args(args)
+    mongo = MongoClient(opts.host, opts.port)
+
+    if opts.dbname is None:
+        mongodb = mongo.get_default_database()
+    else:
+        mongodb = mongo.get_database(opts.dbname)
+
+    if opts.username is not None or opts.password is not None:
+        mongodb.authenticate(opts.username, opts.password, mechanism=DEFAULT_MECHANISM)
+
+    operation = opts.operation
+    if operation == 'info':
+        server_info = mongo.server_info()
+        print(json.dumps(server_info, indent=4))
+    elif operation == 'collections':
+        for cname in mongodb.collection_names():
+            cref = mongodb.get_collection(cname)
+            count = cref.count()
+            print('%s: %d documents' % (cname, count))
+    elif operation == 'clear':
+        for cname in mongodb.collection_names():
+            cref = mongodb.get_collection(cname)
+            result = cref.delete_many({})
+            if result.acknowledged:
+                print("%s: removed %d documents" % (cname, result.deleted_count))
+
+if __name__ == '__main__':
+    main(sys.argv[1:])

@@ -17,18 +17,6 @@
 <!-- This configuration shows is an integrated crawler for cancer.org -->
 <httpcollector id="MedlinePlus Test HTTP Collector">
 
-  #set($workdir = "./defaultcrawl")
-  #set($starturl = "https://www.nlm.nih.gov/news/newsevents.html")
-  #set($useragent = "MedlinePlus Monitor (daniel.davis@nih.gov)")
-  #set($maxdocs = -1)
-  #set($maxdepth = 1)
-
-  #set($es_hosts = "localhost:9300")
-  #set($es_indexname = "medlineplus")
-  #set($es_typename = "page")
-  #set($es_queuesize = "20")
-  #set($es_commitsize = "200")
-
   <!-- Decide where to store generated files. -->
   <progressDir>$workdir/progress</progressDir>
   <logsDir>$workdir/logs</logsDir>
@@ -42,7 +30,8 @@
            Optionally limit crawling to same protocol/domain/port as
            start URLs. -->
       <startURLs stayOnDomain="true" stayOnPort="true" stayOnProtocol="true">
-        <url>$starturl</url>
+        <url>https://www.nlm.nih.gov/news/newsevents.html</url>
+        <url>http://www.webmd.com/women/tc/abortion-topic-overview</url>
       </startURLs>
 
       <!-- === Recommendations: ============================================ -->
@@ -53,12 +42,22 @@
       <numThreads>5</numThreads>
 
       <!-- Put a maximum depth to avoid infinite crawling (e.g. calendars). -->
-      <maxDepth>$maxdepth</maxDepth>
+      <maxDepth>1</maxDepth>
 
       <maxDocuments>$maxdocs</maxDocuments>
 
       <!-- We know we don't want to crawl the entire site, so ignore sitemap. -->
       <sitemapResolverFactory ignore="true" />
+
+      <!--
+      <crawlDataStoreFactory class="com.norconex.collector.http.data.store.impl.mongo.MongoCrawlDataStoreFactory">
+        <host>$mongo_host</host>
+        <dbname>$mongo_dbname</dbname>
+        <username>$mongo_username</username>
+        <password>$mongo_password</password>
+        <mechanism>SCRAM-SHA-1</mechanism>
+      </crawlDataStoreFactory>
+      -->
 
       <referenceFilters>
         <filter class="com.norconex.collector.core.filter.impl.ExtensionReferenceFilter" onMatch="exclude">
@@ -85,6 +84,23 @@
           <tagger class="com.norconex.importer.handler.tagger.impl.RenameTagger">
             <rename fromField="document.reference" toField="url" overwrite="true"/>
             <rename fromField="document.language" toField="language"/>
+            <rename fromField="Content-Type" toField="content_type"/>
+            <rename fromField="Content-Encoding" toField="content_encoding"/>
+            <!-- Rename subset of Dublin ore meta-data -->
+            <rename fromField="DC.Title" toField="dc_title"/>
+            <rename fromField="dc:title" toField="dc_title"/>
+            <rename fromField="DC.Date.Issued" toField="dc_date_issued"/>
+            <rename fromField="DC.Date.Modified" toField="dc_date_modified"/>
+            <!-- Rename subset of OpenGraph meta-data -->
+            <rename fromField="og:title" toField="og_title"/>
+            <rename fromField="og:site_name" toField="og_site_name"/>
+            <rename fromField="og:type" toField="og_type"/>
+            <rename fromField="og:image" toField="og_image"/>
+            <!-- Rename subset of twitter card meta-data -->
+            <rename fromField="twitter:card" toField="twitter_card"/>
+            <rename fromField="twitter:site" toField="twitter_site"/>
+            <rename fromField="twitter:title" toField="twitter_title"/>
+            <rename fromField="twitter:image" toField="twitter_image"/>
           </tagger>
           <tagger class="com.norconex.importer.handler.tagger.impl.SplitTagger">
             <split fromField="keywords" regex="true">
@@ -105,32 +121,34 @@
           <tagger class="com.norconex.importer.handler.tagger.impl.CurrentDateTagger"
                   field="crawled"
                   format="yyyy-MM-dd HH:mm:ss"/>
-          <tagger class="net.danizen.UUIDTagger" field="uuid" overwrite="true"/>
+          <tagger class="com.norconex.importer.handler.tagger.impl.UUIDTagger" field="uuid" overwrite="true"/>
+
           <tagger class="com.norconex.importer.handler.tagger.impl.KeepOnlyTagger">
             <fields>title,keywords,description,url,uuid,md5sum,crawled,domain,status,language</fields>
-            <fieldsRegex>DC.*</fieldsRegex>
+            <fieldsRegex>(dc_|og_|twitter_).*</fieldsRegex>
           </tagger>
         </postParseHandlers>
       </importer>
 
+
       <documentChecksummer keep="true" targetField="md5sum"/>
 
       <!-- Decide what to do with your files by specifying a Committer. -->
-      <committer class="com.norconex.committer.elasticsearch.ElasticsearchCommitter">
-        <clusterHosts>$es_hosts</clusterHosts>
+      <!-- <committer class="com.norconex.committer.elasticsearch.ElasticsearchCommitter">
+        <nodes>$es_server</nodes>
         <indexName>$es_indexname</indexName>
         <typeName>$es_typename</typeName>
+        <username>$es_username</username>
+        <password>$es_password</password>
         <sourceReferenceField keep="false">uuid</sourceReferenceField>
         <queueDir>$workdir/queue</queueDir>
         <queueSize>$es_queuesize</queueSize>
         <commitSize>$es_commitsize</commitSize>
-      </committer>
+      </committer> -->
 
-      <!--
       <committer class="com.norconex.committer.core.impl.FileSystemCommitter">
         <directory>$workdir/files</directory>
       </committer>
-      -->
 
     </crawler>
   </crawlers>

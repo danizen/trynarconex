@@ -31,12 +31,17 @@
       <includes>
         <include>scripts/**</include>
         <include>third-party/**</include>
+        <include>config/**</include>
         <include>*.txt</include>
         <include>collector*</include>
+        <include>importer*</include>
         <include>createindex.sh</include>
         <include>deleteindex.sh</include>
         <include>fieldmappings.sh</include>
-        <include>default*</include>
+        <include>mongoutil</include>
+        <include>*.properties</include>
+        <include>encrypt*</include>
+        <include>decrypt*</include>
       </includes>
       <outputDirectory>/</outputDirectory>
     </fileSet>

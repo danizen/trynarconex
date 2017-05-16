@@ -11,15 +11,19 @@
   <properties>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     <project.report.outputEncoding>UTF-8</project.report.outputEncoding>
-    <norconex.http.version>2.7.0</norconex.http.version>
-    <norconex.core.version>1.8.0</norconex.core.version>
-    <norconex.elastic.version>2.1.0</norconex.elastic.version>
-    <elasticsearch.version>2.4.5</elasticsearch.version>
+    <norconex.http.version>2.7.1-SNAPSHOT</norconex.http.version>
+    <norconex.core.version>1.8.1-SNAPSHOT</norconex.core.version>
+    <norconex.es.version>4.0.0-SNAPSHOT</norconex.es.version>
+    <norconex.committer.version>2.1.0</norconex.committer.version>
     <skrapi.version>2.3</skrapi.version>
-    <sourceEncoding>UTF-8</sourceEncoding>
-    <exec.action>start</exec.action>
-    <exec.configfile>src/main/assembly/default-config.xml</exec.configfile>
-    <exec.varsfile>src/main/assembly/default.properties</exec.varsfile>
+
+    <!-- These are for manual testing -->
+    <crawl.action>start</crawl.action>
+    <crawl.config>src/main/assembly/config/default-collector.xml</crawl.config>
+    <crawl.vars>src/main/assembly/default.properties</crawl.vars>
+    <importer.config>src/main/assembly/config/default-importer.xml</importer.config>
+    <importer.input>testdata/www.webmd.com-allergies-default.htm</importer.input>
+    <importer.output>importer.txt</importer.output>
   </properties>
 
   <build>
@@ -105,32 +109,6 @@
           </execution>
         </executions>
       </plugin>
-      <plugin>
-        <groupId>org.codehaus.mojo</groupId>
-        <artifactId>exec-maven-plugin</artifactId>
-        <version>1.6.0</version>
-        <executions>
-          <execution>
-            <goals>
-              <goal>exec</goal>
-            </goals>
-          </execution>
-        </executions>
-        <configuration>
-          <executable>java</executable>
-          <arguments>
-            <argument>-classpath</argument>
-            <classpath/>
-            <argument>com.norconex.collector.http.HttpCollector</argument>
-            <argument>-a</argument>
-            <argument>${exec.action}</argument>
-            <argument>-v</argument>
-            <argument>${exec.varsfile}</argument>
-            <argument>-c</argument>
-            <argument>${exec.configfile}</argument>
-         </arguments>
-        </configuration>
-      </plugin>
     </plugins>
   </build>
 
@@ -139,11 +117,10 @@
     <dependency>
       <groupId>junit</groupId>
       <artifactId>junit</artifactId>
-      <version>3.8.1</version>
+      <version>4.12</version>
       <scope>test</scope>
     </dependency>
 
-    <!-- Override norconex core version -->
     <dependency>
       <groupId>com.norconex.collectors</groupId>
       <artifactId>norconex-collector-core</artifactId>
@@ -152,15 +129,32 @@
 
     <dependency>
       <groupId>com.norconex.collectors</groupId>
+      <artifactId>norconex-committer-core</artifactId>
+      <version>${norconex.committer.version}</version>
+    </dependency>
+
+    <dependency>
+      <groupId>com.norconex.collectors</groupId>
       <artifactId>norconex-collector-http</artifactId>
       <version>${norconex.http.version}</version>
     </dependency>
 
-    <!-- Override elasticsearch Java API version -->
     <dependency>
-      <groupId>org.elasticsearch</groupId>
-      <artifactId>elasticsearch</artifactId>
-      <version>${elasticsearch.version}</version>
+      <groupId>com.norconex.collectors</groupId>
+      <artifactId>norconex-committer-elasticsearch</artifactId>
+      <version>${norconex.es.version}</version>
+    </dependency>
+
+    <dependency>
+      <groupId>org.mongodb</groupId>
+      <artifactId>mongo-java-driver</artifactId>
+      <version>3.4.2</version>
+    </dependency>
+
+    <dependency>
+      <groupId>io.searchbox</groupId>
+      <artifactId>jest</artifactId>
+      <version>2.4.0</version>
     </dependency>
 
     <!-- Add the MTI document classifier -->
@@ -171,17 +165,76 @@
     </dependency> -->
 
     <dependency>
-      <groupId>com.norconex.collectors</groupId>
-      <artifactId>norconex-committer-elasticsearch</artifactId>
-      <version>${norconex.elastic.version}</version>
-    </dependency>
-
-    <dependency>
       <groupId>commons-cli</groupId>
       <artifactId>commons-cli</artifactId>
-      <version>1.3.1</version>
+      <version>1.4</version>
     </dependency>
 
   </dependencies>
+
+  <profiles>
+    <profile>
+      <id>crawler</id>
+      <build>
+        <plugins>
+          <plugin>
+            <groupId>org.codehaus.mojo</groupId>
+            <artifactId>exec-maven-plugin</artifactId>
+            <version>1.6.0</version>
+            <executions>
+              <execution>
+                <goals>
+                  <goal>java</goal>
+                </goals>
+              </execution>
+            </executions>
+            <configuration>
+              <mainClass>com.norconex.collector.http.HttpCollector</mainClass>
+              <arguments>
+                <argument>-a</argument>
+                <argument>${crawl.action}</argument>
+                <argument>-v</argument>
+                <argument>${crawl.vars}</argument>
+                <argument>-c</argument>
+                <argument>${crawl.config}</argument>
+             </arguments>
+            </configuration>
+          </plugin>
+        </plugins>
+      </build>
+    </profile>
+    <profile>
+      <id>importer</id>
+      <build>
+        <plugins>
+          <plugin>
+            <groupId>org.codehaus.mojo</groupId>
+            <artifactId>exec-maven-plugin</artifactId>
+            <version>1.6.0</version>
+            <executions>
+              <execution>
+                <goals>
+                  <goal>java</goal>
+                </goals>
+              </execution>
+            </executions>
+            <configuration>
+              <mainClass>com.norconex.importer.Importer</mainClass>
+              <arguments>
+                <argument>-t</argument>
+                <argument>"text/html; charset=utf-8"</argument>
+                <argument>-c</argument>
+                <argument>${importer.config}</argument>
+                <argument>-i</argument>
+                <argument>${importer.input}</argument>
+                <argument>-o</argument>
+                <argument>${importer.output}</argument>
+             </arguments>
+            </configuration>
+          </plugin>
+        </plugins>
+      </build>
+    </profile>
+  </profiles>
 
 </project>

@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Document importing -->
+<importer>
+  <postParseHandlers>
+    <transformer class="com.norconex.importer.handler.transformer.impl.ReplaceTransformer">
+      <replace>
+        <fromValue>[\r\n\t\s]+</fromValue>
+        <toValue xml:space="preserve"> </toValue>
+      </replace>
+    </transformer>
+    <tagger class="com.norconex.importer.handler.tagger.impl.LanguageTagger">
+      <languages>en, es</languages>
+    </tagger>
+    <tagger class="com.norconex.importer.handler.tagger.impl.RenameTagger">
+      <rename fromField="document.reference" toField="url" overwrite="true"/>
+      <rename fromField="document.language" toField="language"/>
+      <rename fromField="Content-Type" toField="content_type"/>
+      <rename fromField="Content-Encoding" toField="content_encoding"/>
+      <!-- Rename subset of Dublin ore meta-data -->
+      <rename fromField="DC.Title" toField="dc_title"/>
+      <rename fromField="dc:title" toField="dc_title"/>
+      <rename fromField="DC.Date.Issued" toField="dc_date_issued"/>
+      <rename fromField="DC.Date.Modified" toField="dc_date_modified"/>
+      <!-- Rename subset of OpenGraph meta-data -->
+      <rename fromField="og:title" toField="og_title"/>
+      <rename fromField="og:site_name" toField="og_site_name"/>
+      <rename fromField="og:type" toField="og_type"/>
+      <rename fromField="og:image" toField="og_image"/>
+      <!-- Rename subset of twitter card meta-data -->
+      <rename fromField="twitter:card" toField="twitter_card"/>
+      <rename fromField="twitter:site" toField="twitter_site"/>
+      <rename fromField="twitter:title" toField="twitter_title"/>
+      <rename fromField="twitter:image" toField="twitter_image"/>
+    </tagger>
+    <tagger class="com.norconex.importer.handler.tagger.impl.SplitTagger">
+      <split fromField="keywords" regex="true">
+        <separator>\s*,\s*</separator>
+      </split>
+    </tagger>
+    <tagger class="com.norconex.importer.handler.tagger.impl.ScriptTagger">
+      <script><![CDATA[
+        var expr = new RegExp('[a-z]+://([^/]+).*');
+        var url = metadata.url[0];
+        var domain = url.replace(expr, '$1');
+        metadata.addString('domain', domain);
+      ]]></script>
+    </tagger>
+    <tagger class="com.norconex.importer.handler.tagger.impl.ConstantTagger" onConflict="noop">
+      <constant name="status">new</constant>
+    </tagger>
+    <tagger class="com.norconex.importer.handler.tagger.impl.CurrentDateTagger"
+            field="crawled"
+            format="yyyy-MM-dd HH:mm:ss"/>
+    <tagger class="com.norconex.importer.handler.tagger.impl.UUIDTagger" field="uuid" overwrite="true"/>
+
+    <tagger class="com.norconex.importer.handler.tagger.impl.KeepOnlyTagger">
+      <fields>title,keywords,description,url,uuid,md5sum,crawled,domain,status,language</fields>
+      <fieldsRegex>(dc_|og_|twitter_).*</fieldsRegex>
+    </tagger>
+  </postParseHandlers>
+</importer>
