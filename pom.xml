@@ -11,11 +11,13 @@
   <properties>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     <project.report.outputEncoding>UTF-8</project.report.outputEncoding>
-    <norconex.http.version>2.7.0</norconex.http.version>
-    <norconex.core.version>1.8.0</norconex.core.version>
+    <norconex.http.version>2.7.1-SNAPSHOT</norconex.http.version>
+    <norconex.core.version>1.8.1-SNAPSHOT</norconex.core.version>
+    <norconex.es.version>4.0.0-SNAPSHOT</norconex.es.version>
     <norconex.committer.version>2.1.0</norconex.committer.version>
     <skrapi.version>2.3</skrapi.version>
-    <sourceEncoding>UTF-8</sourceEncoding>
+
+    <!-- These are for manual testing -->
     <crawl.action>start</crawl.action>
     <crawl.config>src/main/assembly/config/default-collector.xml</crawl.config>
     <crawl.vars>src/main/assembly/default.properties</crawl.vars>
@@ -119,11 +121,16 @@
       <scope>test</scope>
     </dependency>
 
-    <!-- Override norconex core version -->
     <dependency>
       <groupId>com.norconex.collectors</groupId>
       <artifactId>norconex-collector-core</artifactId>
       <version>${norconex.core.version}</version>
+    </dependency>
+
+    <dependency>
+      <groupId>com.norconex.collectors</groupId>
+      <artifactId>norconex-committer-core</artifactId>
+      <version>${norconex.committer.version}</version>
     </dependency>
 
     <dependency>
@@ -134,8 +141,8 @@
 
     <dependency>
       <groupId>com.norconex.collectors</groupId>
-      <artifactId>norconex-committer-core</artifactId>
-      <version>${norconex.committer.version}</version>
+      <artifactId>norconex-committer-elasticsearch</artifactId>
+      <version>${norconex.es.version}</version>
     </dependency>
 
     <dependency>
