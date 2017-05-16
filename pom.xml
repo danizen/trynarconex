@@ -1,16 +1,18 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
   xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
   <modelVersion>4.0.0</modelVersion>
-  <groupId>net.danizen</groupId>
-  <artifactId>trynorconex</artifactId>
+  <groupId>gov.nih.nlm.occs</groupId>
+  <artifactId>norconex-crawler</artifactId>
   <packaging>jar</packaging>
   <version>1.0-SNAPSHOT</version>
-  <name>trynorconex</name>
+  <name>norconex-crawler</name>
   <url>http://maven.apache.org</url>
 
   <properties>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     <project.report.outputEncoding>UTF-8</project.report.outputEncoding>
+
+    <!-- Norconex upstream versions -->
     <norconex.http.version>2.7.1-SNAPSHOT</norconex.http.version>
     <norconex.core.version>1.8.1-SNAPSHOT</norconex.core.version>
     <norconex.es.version>4.0.0-SNAPSHOT</norconex.es.version>

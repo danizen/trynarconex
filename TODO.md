@@ -1,18 +1,6 @@
-# Tasks to get to something good
+# TODOs
 
-- Read more from Elasticsearch In Action book
-- Get rest committer to work for me
-
-# Advanced tasks that aren't really needed right now
-
-- Split the indexing by using the LanguageTagger to tag the language,
-  and then index english to an index with an english analyzer, and spanish
-  to an index with a spanish analyzer.  Don't index pages in german.
-  (this is probably over-engineering)
-- Develop some sort of UI
-- Write a Summarizer using sumy implementation as guide
-
-# Issues with the crawl
+## Issues with the crawl
 
 The crawl is *not* stripping boiler plate, and it is not going deep enough.
 
